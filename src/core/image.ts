@@ -1,7 +1,18 @@
 import { readImage, drawImage } from '../utils/image.util';
 import { PomeloRecord, Record } from './record';
+import Hook from "./hook";
 
 let id = 0;
+
+const HOOKS =
+  [
+    'beforeTransform',
+    'transform',
+    'afterTransform',
+    'beforeRender',
+    'render',
+    'afterRender',
+  ]
 
 export enum Operation {
   ADD = 'ADD',
@@ -14,6 +25,7 @@ export enum Operation {
 
 export interface Image {
   load: (src: string, width: number, height: number) => PomeloImage;
+  hooks: { [key: string]: Hook }
 }
 
 interface ImageOptions {
@@ -29,6 +41,9 @@ export class PomeloImage implements Image {
   private id: number;
   readonly width: number = 0;
   readonly height: number = 0;
+  readonly hooks = {
+    render: new Hook('render'),
+  };
 
   constructor(option: ImageOptions) {
     const { src, width, height } = option;
